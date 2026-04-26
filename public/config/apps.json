@@ -1,0 +1,21 @@
+{
+  "title": "Portal",
+  "subtitle": "Откройте нужный миниапп одним нажатием",
+  "apps": [
+    {
+      "id": "karabas",
+      "label": "Karabas",
+      "url": "https://t.me/karabas_demo_bot/Karabas_demo"
+    },
+    {
+      "id": "forever",
+      "label": "Forever",
+      "url": "https://t.me/forever_young_miniapp_bot/forever_young"
+    },
+    {
+      "id": "tochka",
+      "label": "Точка",
+      "url": "https://t.me/tochka_miniapp_bot/tochka_miniapp"
+    }
+  ]
+}

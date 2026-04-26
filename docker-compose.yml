@@ -1,0 +1,17 @@
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        VITE_APP_BASE: ${APP_BASE_PATH}/
+    restart: unless-stopped
+    networks:
+      default:
+      gateway:
+        aliases:
+          - portal-frontend
+
+networks:
+  gateway:
+    name: ${GATEWAY_NETWORK:-gateway-net}
+    external: true
