@@ -16,10 +16,18 @@
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
   min-width: 320px;
   min-height: 100vh;
+  min-height: 100dvh;
+  min-height: var(--tg-viewport-height, 100dvh);
   background:
     radial-gradient(circle at top left, rgba(255, 214, 153, 0.68), transparent 34%),
     radial-gradient(circle at bottom right, rgba(13, 143, 121, 0.22), transparent 28%),
@@ -33,11 +41,15 @@ button {
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
+  min-height: var(--tg-viewport-height, 100dvh);
 }
 
 .portal-shell {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
+  min-height: var(--tg-viewport-height, 100dvh);
   overflow: hidden;
   padding: 28px 18px;
   display: grid;

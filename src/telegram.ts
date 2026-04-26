@@ -4,16 +4,34 @@ declare global {
       WebApp?: {
         ready?: () => void;
         expand?: () => void;
+        requestFullscreen?: () => void;
         openLink?: (url: string) => void;
         openTelegramLink?: (url: string) => void;
+        viewportHeight?: number;
+        viewportStableHeight?: number;
+        onEvent?: (eventType: string, eventHandler: () => void) => void;
       };
     };
   }
 }
 
+function updateViewportHeight() {
+  const webApp = window.Telegram?.WebApp;
+  const viewportHeight = webApp?.viewportStableHeight || webApp?.viewportHeight;
+
+  if (viewportHeight && Number.isFinite(viewportHeight)) {
+    document.documentElement.style.setProperty("--tg-viewport-height", `${viewportHeight}px`);
+  }
+}
+
 export function prepareTelegramWebApp() {
-  window.Telegram?.WebApp?.ready?.();
-  window.Telegram?.WebApp?.expand?.();
+  const webApp = window.Telegram?.WebApp;
+
+  webApp?.ready?.();
+  webApp?.expand?.();
+  webApp?.requestFullscreen?.();
+  updateViewportHeight();
+  webApp?.onEvent?.("viewportChanged", updateViewportHeight);
 }
 
 export function openMiniApp(url: string) {
