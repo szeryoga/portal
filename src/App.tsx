@@ -93,49 +93,60 @@ export default function App() {
       <div className="portal-orb portal-orb--left" />
       <div className="portal-orb portal-orb--right" />
       <section className="portal-card">
-        <p className="portal-kicker">Telegram Mini App</p>
-        <h1>{config?.title ?? "Portal"}</h1>
-        <p className="portal-subtitle">
-          {config?.subtitle ?? "Загрузка конфигурации..."}
-        </p>
-
-        {!isTelegram ? (
-          <div className="portal-note">
-            Открыто вне Telegram. Кнопки ниже все равно работают и откроют нужные ссылки.
+        <div className="portal-windowbar" aria-hidden="true">
+          <div className="portal-windowbar__dots">
+            <span />
+            <span />
+            <span />
           </div>
-        ) : null}
+          <span className="portal-windowbar__title">portal.etalonfood.com</span>
+        </div>
 
-        {error ? (
-          <div className="portal-error">
-            <strong>Не удалось загрузить конфиг.</strong>
-            <span>{error}</span>
+        <div className="portal-card__body">
+          <p className="portal-kicker">Telegram Mini App</p>
+          <h1>{config?.title ?? "Portal"}</h1>
+          <p className="portal-subtitle">
+            {config?.subtitle ?? "Загрузка конфигурации..."}
+          </p>
+
+          {!isTelegram ? (
+            <div className="portal-note">
+              Открыто вне Telegram. Кнопки ниже все равно работают и откроют нужные ссылки.
+            </div>
+          ) : null}
+
+          {error ? (
+            <div className="portal-error">
+              <strong>Не удалось загрузить конфиг.</strong>
+              <span>{error}</span>
+            </div>
+          ) : null}
+
+          <div className="portal-actions">
+            {config
+              ? config.apps.map((app, index) => (
+                  <button
+                    key={app.id}
+                    type="button"
+                    className="portal-button"
+                    onClick={() => openMiniApp(app.url)}
+                    style={{ animationDelay: `${index * 120}ms` }}
+                  >
+                    <span className="portal-button__label">{app.label}</span>
+                    <span className="portal-button__meta">Открыть миниапп</span>
+                  </button>
+                ))
+              : Array.from({ length: 3 }, (_, index) => (
+                  <div
+                    key={`placeholder-${index}`}
+                    className="portal-button portal-button--placeholder"
+                    style={{ animationDelay: `${index * 120}ms` }}
+                  >
+                    <span className="portal-button__label">Загрузка...</span>
+                    <span className="portal-button__meta">Подготовка кнопок</span>
+                  </div>
+                ))}
           </div>
-        ) : null}
-
-        <div className="portal-actions">
-          {config
-            ? config.apps.map((app, index) => (
-                <button
-                  key={app.id}
-                  type="button"
-                  className="portal-button"
-                  onClick={() => openMiniApp(app.url)}
-                  style={{ animationDelay: `${index * 120}ms` }}
-                >
-                  <span className="portal-button__label">{app.label}</span>
-                  <span className="portal-button__meta">Открыть миниапп</span>
-                </button>
-              ))
-            : Array.from({ length: 3 }, (_, index) => (
-                <div
-                  key={`placeholder-${index}`}
-                  className="portal-button portal-button--placeholder"
-                  style={{ animationDelay: `${index * 120}ms` }}
-                >
-                  <span className="portal-button__label">Загрузка...</span>
-                  <span className="portal-button__meta">Подготовка кнопок</span>
-                </div>
-              ))}
         </div>
       </section>
     </main>
