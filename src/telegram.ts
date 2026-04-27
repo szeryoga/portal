@@ -3,8 +3,6 @@ declare global {
     Telegram?: {
       WebApp?: {
         ready?: () => void;
-        expand?: () => void;
-        requestFullscreen?: () => void;
         openLink?: (url: string) => void;
         openTelegramLink?: (url: string) => void;
         viewportHeight?: number;
@@ -28,8 +26,6 @@ export function prepareTelegramWebApp() {
   const webApp = window.Telegram?.WebApp;
 
   webApp?.ready?.();
-  webApp?.expand?.();
-  webApp?.requestFullscreen?.();
   updateViewportHeight();
   webApp?.onEvent?.("viewportChanged", updateViewportHeight);
 }

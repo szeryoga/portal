@@ -106,6 +106,17 @@ button {
   gap: 14px;
 }
 
+.portal-note {
+  margin-top: 20px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(7, 105, 90, 0.12);
+  color: var(--accent-strong);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .portal-button {
   position: relative;
   overflow: hidden;
@@ -128,6 +139,13 @@ button {
     transform 0.2s ease,
     box-shadow 0.2s ease,
     filter 0.2s ease;
+}
+
+.portal-button--placeholder {
+  cursor: default;
+  pointer-events: none;
+  background: linear-gradient(135deg, #a3c9c2 0%, #6f968e 100%);
+  box-shadow: 0 14px 24px rgba(70, 105, 98, 0.16);
 }
 
 .portal-button::after {
