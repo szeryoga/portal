@@ -16,6 +16,11 @@
       "id": "tochka",
       "label": "Точка",
       "url": "https://t.me/tochka_miniapp_bot/tochka_miniapp"
+    },
+    {
+      "id": "quiz10",
+      "label": "Контакт с собой",
+      "url": "https://t.me/quiz10_miniapp_bot/quiz10"
     }
   ]
 }
