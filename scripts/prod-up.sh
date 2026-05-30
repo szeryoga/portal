@@ -4,30 +4,22 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT_DIR"
 
-GATEWAY_NETWORK_NAME="gateway-net"
-
-if [[ -f .env ]]; then
-  GATEWAY_NETWORK_FROM_ENV="$(grep -E '^GATEWAY_NETWORK=' .env | tail -n 1 | cut -d'=' -f2- || true)"
-  if [[ -n "${GATEWAY_NETWORK_FROM_ENV}" ]]; then
-    GATEWAY_NETWORK_NAME="${GATEWAY_NETWORK_FROM_ENV}"
-  fi
+if docker compose version >/dev/null 2>&1; then
+  COMPOSE_CMD=(docker compose)
+elif command -v docker-compose >/dev/null 2>&1; then
+  COMPOSE_CMD=(docker-compose)
+else
+  echo "Docker Compose не найден. Установите plugin 'docker compose' или бинарник 'docker-compose'."
+  exit 1
 fi
 
-if ! docker network inspect "$GATEWAY_NETWORK_NAME" >/dev/null 2>&1; then
-  echo "Creating external gateway network: $GATEWAY_NETWORK_NAME"
-  docker network create "$GATEWAY_NETWORK_NAME" >/dev/null
-fi
+echo "Building and starting production services..."
+"${COMPOSE_CMD[@]}" up -d --build postgres backend frontend admin
 
-docker compose up -d --build frontend
+cat <<'EOF'
 
-cat <<EOF
-
-Production portal started:
-  frontend: portal-frontend:80
-
-Gateway network:
-  ${GATEWAY_NETWORK_NAME}
-
-Gateway upstream:
-  http://portal-frontend:80
+Production services are available to gateway:
+  frontend: poputi-frontend:80
+  admin:    poputi-admin:80
+  backend:  poputi-backend:8000
 EOF

@@ -1,88 +1,101 @@
-# Portal
+# Poputi
 
-`portal` — это Telegram mini app-страница с кнопками-переходами в другие миниаппы.
+`poputi` — миниапп магазина «По пути» с каталогом товаров, событиями, корзиной, оформлением заказа, админкой и backend API.
 
-Сейчас проект состоит только из frontend-сервиса:
+## Сервисы
 
-- без backend
-- без базы данных
-- без админки
-- production-доступ через существующий `gateway`
+- `frontend` — Telegram Mini App / browser SPA
+- `admin` — админка магазина
+- `backend` — FastAPI API
+- `postgres` — PostgreSQL
+- `nginx` — локальный reverse proxy для разработки
 
-Production URL:
-
-- `https://portal.etalonfood.com/app`
-
-## Конфиг миниаппов
-
-Названия и ссылки кнопок не захардкожены в коде. Они берутся из runtime-конфига:
-
-- [public/config/apps.json](/home/szeryoga/devel/portal/public/config/apps.json)
-
-Пример:
-
-```json
-{
-  "title": "Portal",
-  "subtitle": "Выберите миниапп, который хотите открыть",
-  "apps": [
-    {
-      "id": "karabas",
-      "label": "Karabas",
-      "url": "https://t.me/karabas_demo_bot/Karabas_demo"
-    }
-  ]
-}
-```
-
-## Переменные окружения
-
-Скопируйте шаблон:
+## Быстрый старт
 
 ```bash
 cp .env.example .env
+./scripts/local-dev.sh
 ```
 
-Используются:
+Локальные адреса:
 
-```env
-APP_DOMAIN=portal.etalonfood.com
-APP_BASE_PATH=/app
-GATEWAY_NETWORK=gateway-net
+- mini app: `http://127.0.0.1:3014/app`
+- admin: `http://127.0.0.1:3014/admin`
+- api: `http://127.0.0.1:3014/api/`
+- health: `http://127.0.0.1:3014/health`
+- docs: `http://127.0.0.1:8014/docs`
+
+## Тесты
+
+Минимальная API test-infra запускается из отдельного docker-контейнера `tests`.
+
+Тесты против `backend`:
+
+```bash
+./scripts/local-tests.sh backend
 ```
+
+Тесты против локального `nginx`:
+
+```bash
+./scripts/local-tests.sh nginx
+```
+
+Что сейчас входит:
+
+- `tests/create-order.sh` — smoke/integration тест на создание заказа через public API
+- `tests/run-all.sh` — общий runner для запуска всех API-тестов
+
+По умолчанию тесты ходят:
+
+- либо в `http://backend:8000/api/public`
+- либо в `http://nginx/api/public`
+
+То есть можно отдельно тестировать:
+
+- бизнес-логику API без proxy-слоя
+- и integration path через локальный nginx с путями `/api`
 
 ## Production
-
-Запуск:
 
 ```bash
 ./scripts/prod-up.sh
 ```
 
-Остановка:
+Production URLs:
 
-```bash
-./scripts/prod-stop.sh
-```
+- mini app: `https://poputi.appline.tw1.ru/app`
+- admin: `https://poputi.appline.tw1.ru/admin`
+- api: `https://poputi.appline.tw1.ru/api`
 
-После запуска gateway должен маршрутизировать:
+Сервисы для `gateway`:
 
-- `portal.etalonfood.com/app` -> `http://portal-frontend:80`
+- `poputi-frontend:80`
+- `poputi-admin:80`
+- `poputi-backend:8000`
 
-## Локальная разработка
+## Environment
 
-Локальный запуск без gateway:
+Основные группы переменных:
 
-```bash
-./scripts/local-dev.sh
-```
+- Postgres
+- admin auth / JWT
+- S3 storage для изображений товаров и событий
+- СБП-платежи
+- Google Client ID для браузерной авторизации
 
-Локально приложение будет доступно по адресу:
+## Что уже реализовано
 
-- `http://127.0.0.1:3002/`
+- backend на FastAPI + SQLAlchemy + Alembic
+- сид данных магазина, категорий, товаров, событий и соцсетей
+- модели клиентов, заказов, позиций заказа и webhook логов оплаты
+- публичные API для bootstrap, auth, профиля, заказа и webhook оплаты
+- admin API для настроек, товаров, категорий, событий, заказов, клиентов и загрузки изображений в S3
+- docker-compose и локальный nginx по схеме проектов `quiz10` / `tochka`
 
-Остановка:
+## Следующие действия после генерации проекта
 
-```bash
-./scripts/local-dev-stop.sh
-```
+1. Заполнить `.env`
+2. Поднять локальный стек
+3. Проверить frontend и admin
+4. Подключить production route в `gateway`

@@ -6,14 +6,19 @@ cd "$ROOT_DIR"
 
 COMPOSE_FILES=(-f docker-compose.yml -f docker-compose.local.yml)
 
-echo "Building and starting local portal frontend..."
-docker compose "${COMPOSE_FILES[@]}" up -d --build frontend
+echo "Building and starting local services with nginx..."
+docker compose "${COMPOSE_FILES[@]}" --profile local-gateway up -d --build postgres backend frontend admin nginx
 
 cat <<'EOF'
 
-Local portal is available at:
-  http://127.0.0.1:3002/
+Local services are available at:
+  Mini app:    http://127.0.0.1:3014/app
+  Admin panel: http://127.0.0.1:3014/admin
+  Backend API: http://127.0.0.1:3014/api/
+  Healthcheck: http://127.0.0.1:3014/health
+  Direct API:  http://127.0.0.1:8014/docs
 
 Useful commands:
-  docker compose -f docker-compose.yml -f docker-compose.local.yml logs -f frontend
+  docker compose -f docker-compose.yml -f docker-compose.local.yml logs -f backend
+  docker compose -f docker-compose.yml -f docker-compose.local.yml logs -f nginx
 EOF

@@ -6,9 +6,14 @@ cd "$ROOT_DIR"
 
 COMPOSE_FILES=(-f docker-compose.yml -f docker-compose.local.yml)
 
-docker compose "${COMPOSE_FILES[@]}" stop frontend
+docker compose "${COMPOSE_FILES[@]}" --profile local-gateway stop postgres backend frontend admin nginx
 
 cat <<'EOF'
 
-Local portal frontend stopped.
+Local services stopped:
+  postgres
+  backend
+  frontend
+  admin
+  nginx
 EOF

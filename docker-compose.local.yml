@@ -1,7 +1,36 @@
 services:
+  backend:
+    environment:
+      CORS_ORIGINS: http://127.0.0.1:3014,http://localhost:3014,http://127.0.0.1:8014,http://localhost:8014
+    ports:
+      - "127.0.0.1:8014:8000"
+
   frontend:
     build:
       args:
-        VITE_APP_BASE: /
+        VITE_API_BASE: /api
+        VITE_APP_BASE: /app/
+        VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+
+  admin:
+    build:
+      args:
+        VITE_API_BASE: /api
+        VITE_ADMIN_BASE: /admin/
+
+  nginx:
     ports:
-      - "127.0.0.1:3002:80"
+      - "127.0.0.1:3014:80"
+
+  tests:
+    build:
+      context: ./tests
+    profiles: ["tests"]
+    working_dir: /workspace
+    environment:
+      API_BASE: ${TEST_API_BASE:-http://backend:8000/api/public}
+    depends_on:
+      backend:
+        condition: service_healthy
+    volumes:
+      - ./:/workspace
